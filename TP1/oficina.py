@@ -26,14 +26,24 @@ def new_file(filename, content):
 dados = open_json_file("dataset_reparacoes.json")
 mk_dir("output")
 mk_dir("output/intervencoes")
+mk_dir("output/reparacoes")
 
-#--------------------- Listagem dos tipos de intervenção --------------------#
+
+
+
+
+#-------------------- Script principal --------------------#
 
 # Código - Nome e Descrição
 intervencoes = {}
 codigos_intervencao = []
 
+linhas_reparacoes = ""
+
+
 for reparacao in dados["reparacoes"]:
+    linhas_reparacoes += f'''<tr> <td>{reparacao["data"]}</td> <td>{reparacao["nif"]}</td> <td>{reparacao["nome"]}</td> <td>{reparacao["viatura"]["marca"]}</td> <td>{reparacao["viatura"]["modelo"]}</td> <td>{reparacao["nr_intervencoes"]}</td> </tr>\n '''
+
     for intervencao in reparacao["intervencoes"]:
         if intervencao["codigo"] not in intervencoes:
             codigos_intervencao.append(intervencao["codigo"])
@@ -42,9 +52,58 @@ for reparacao in dados["reparacoes"]:
                 "descricao": intervencao["descricao"]
             }
 
+
+#--------------------- Listagem das reparações  --------------------#
+
+html_lista_reparacoes = f'''
+
+<html> 
+    <head>
+        <title> Lista de Reparações </title>
+        <meta charset="utf-8"/>
+    </head> 
+    <body> 
+        <h3>Lista de Reparações</h3>
+        <table border = "1"> 
+            <tr> <td>Data</td> <td>NIF</td> <td>Nome</td> <td>Marca</td> <td>Modelo</td> <td>Número de Intervenções</td> </tr>
+            {linhas_reparacoes}
+        </table>
+    </body> 
+</html>
+
+'''
+
+new_file("./output/reparacoes/lista_reparacoes.html", html_lista_reparacoes)
+
+#-------------------- Página individual de cada reparação --------------------#
+
+
+html_reparacao = f'''
+
+<html> 
+    <head>
+        <title> Reparacao </title>
+        <meta charset="utf-8"/>
+    </head> 
+    <body> 
+        <h3>Lista de Reparações</h3>
+        <table border = "1"> 
+            <tr> <td>Data</td> <td>NIF</td> <td>Nome</td> <td>Marca</td> <td>Modelo</td> <td>Número de Intervenções</td> </tr>
+            {linhas_reparacoes}
+        </table>
+    </body> 
+</html>
+
+'''
+
+
+
+#--------------------- Listagem dos tipos de intervenção --------------------#
+
 lista_intervencoes = ""
 
 intervencoes_ordenadas = sorted(codigos_intervencao)
+
 
 for codigo in intervencoes_ordenadas:
     item = intervencoes[codigo]
@@ -64,6 +123,10 @@ html_lista_inter = f'''
         <ul>
             {lista_intervencoes}
         </ul>
+        <hr/>
+            <adress>
+                <a href="../index.html">Voltar ao índice</a>
+            </adress>
     </body>
 </html>
 
@@ -123,6 +186,7 @@ html = f'''
         <h3>Lista de Dados consultáveis sobre as reparações</h3>
         <ul>
             <li><a href="intervencoes/lista_intervencoes.html">Tipos de Intervenção</a></li> 
+            <li><a href="reparacoes/lista_reparacoes.html">Lista de Reparações</a></li>
         </ul>
     </body>
 </html>
