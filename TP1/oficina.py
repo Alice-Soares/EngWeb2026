@@ -40,9 +40,11 @@ codigos_intervencao = []
 
 linhas_reparacoes = ""
 
+reparacoes = dados["reparacoes"]
+reparacoes_ordenadas = sorted(reparacoes, key=lambda x: x["data"])
+
 
 for reparacao in dados["reparacoes"]:
-    linhas_reparacoes += f'''<tr> <td>{reparacao["data"]}</td> <td>{reparacao["nif"]}</td> <td>{reparacao["nome"]}</td> <td>{reparacao["viatura"]["marca"]}</td> <td>{reparacao["viatura"]["modelo"]}</td> <td>{reparacao["nr_intervencoes"]}</td> </tr>\n '''
 
     for intervencao in reparacao["intervencoes"]:
         if intervencao["codigo"] not in intervencoes:
@@ -53,7 +55,39 @@ for reparacao in dados["reparacoes"]:
             }
 
 
-#--------------------- Listagem das reparações  --------------------#
+#--------------------- Listagem e Páginas individuais das reparações  --------------------#
+intervencoes_realizadas= ""
+
+for reparacao in reparacoes_ordenadas:
+        linhas_reparacoes += f'''<tr> <td> <a href ="./{reparacao['nif']}_{reparacao['data']}.html">{reparacao["data"]} </a></td> <td>{reparacao["nif"]}</td> <td>{reparacao["nome"]}</td> <td>{reparacao["viatura"]["marca"]}</td> <td>{reparacao["viatura"]["modelo"]}</td> <td>{reparacao["nr_intervencoes"]}</td> </tr>\n '''
+        html_reparacao = f'''
+            <html>
+                <head>
+                    <title> Reparação de {reparacao["nome"]} </title>
+                    <meta charset="utf-8"/>
+                </head>
+                <body>
+                    <h2>Reparação de {reparacao["nome"]}</h2>
+                    <h1> Dados do cliente </h1>
+                    <table border="1">
+                        <tr> <td>Data</td> <td>{reparacao["data"]}</td> </tr>
+                        <tr> <td>NIF</td> <td>{reparacao["nif"]}</td> </tr>
+                        <tr> <td>Nome</td> <td>{reparacao["nome"]}</td> </tr>
+                    </table>
+                    <h1> Dados da viatura </h1>
+                    <table border="1">
+                        <tr> <td>Marca</td> <td>{reparacao["viatura"]["marca"]}</td> </tr> 
+                        <tr> <td>Modelo</td> <td>{reparacao["viatura"]["modelo"]}</td> </tr> 
+                        <tr> <td>Matrícula</td> <td>{reparacao["viatura"]["matricula"]}</td> </tr>
+                    </table>
+                    <h1> Intervenções realizadas </h1>
+                    <p> Número de intervenções: {reparacao["nr_intervencoes"]} </p>
+                    {intervencoes_realizadas}
+
+            '''
+        new_file(f"./output/reparacoes/{reparacao['nif']}_{reparacao['data']}.html", html_reparacao)
+
+
 
 html_lista_reparacoes = f'''
 
@@ -74,29 +108,6 @@ html_lista_reparacoes = f'''
 '''
 
 new_file("./output/reparacoes/lista_reparacoes.html", html_lista_reparacoes)
-
-#-------------------- Página individual de cada reparação --------------------#
-
-
-html_reparacao = f'''
-
-<html> 
-    <head>
-        <title> Reparacao </title>
-        <meta charset="utf-8"/>
-    </head> 
-    <body> 
-        <h3>Lista de Reparações</h3>
-        <table border = "1"> 
-            <tr> <td>Data</td> <td>NIF</td> <td>Nome</td> <td>Marca</td> <td>Modelo</td> <td>Número de Intervenções</td> </tr>
-            {linhas_reparacoes}
-        </table>
-    </body> 
-</html>
-
-'''
-
-
 
 #--------------------- Listagem dos tipos de intervenção --------------------#
 
