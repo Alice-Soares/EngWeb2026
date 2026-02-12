@@ -1,0 +1,132 @@
+import json, os, shutil
+
+
+def open_json_file(filename):
+    """Abre e lê um ficheiro JSON."""
+    with open(filename, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    return data
+
+def mk_dir(relative_path):
+    """Cria um diretório se não existir.
+    Se existir, remove-o e cria um novo.
+    """
+    if not os.path.exists(relative_path):
+        os.mkdir(relative_path)
+    else: 
+        shutil.rmtree(relative_path)
+        os.mkdir(relative_path)
+
+def new_file(filename, content):
+    """Cria um novo ficheiro e escreve o conteúdo nele."""
+    with open(filename, 'w', encoding='utf-8') as file:
+        file.write(content)
+
+
+dados = open_json_file("dataset_reparacoes.json")
+mk_dir("output")
+mk_dir("output/intervencoes")
+
+#--------------------- Listagem dos tipos de intervenção --------------------#
+
+# Código - Nome e Descrição
+intervencoes = {}
+codigos_intervencao = []
+
+for reparacao in dados["reparacoes"]:
+    for intervencao in reparacao["intervencoes"]:
+        if intervencao["codigo"] not in intervencoes:
+            codigos_intervencao.append(intervencao["codigo"])
+            intervencoes[intervencao["codigo"]] = {
+                "nome": intervencao["nome"],
+                "descricao": intervencao["descricao"]
+            }
+
+lista_intervencoes = ""
+
+intervencoes_ordenadas = sorted(codigos_intervencao)
+
+for codigo in intervencoes_ordenadas:
+    item = intervencoes[codigo]
+    lista_intervencoes += f'''
+    <li><a href="{codigo}.html">{codigo}</a> - {item['nome']} : {item['descricao']}</li>\n
+    
+    '''
+
+html_lista_inter = f'''
+<html>
+    <head>
+        <title> Tipos de Intervenção </title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <h3>Tipos de Intervenção</h3>
+        <ul>
+            {lista_intervencoes}
+        </ul>
+    </body>
+</html>
+
+
+'''
+new_file("./output/intervencoes/lista_intervencoes.html", html_lista_inter)
+
+
+
+#-------------------- Paginas individuais Intervenção --------------------#
+
+lista_reparacoes_de_intervencao = ""
+
+
+for intervencao in intervencoes:
+
+    html_intervencao = f'''
+    <html>
+        <head>
+            <title> {intervencao} </title>
+            <meta charset="utf-8"/>
+        </head>
+        <body>
+            <h2>{intervencao}</h2>
+            <table border="1">
+                <tr> <td>Código</td> <td>{intervencao}</td> </tr>
+                <tr> <td>Nome</td> <td>{intervencoes[intervencao]["nome"]}</td> </tr>
+                <tr> <td>Descrição</td> <td>{intervencoes[intervencao]["descricao"]}</td> </tr>
+            </table>
+            <hr/>
+            <h3>Reparações que incluem esta intervenção</h3>
+            <ul>
+                {lista_reparacoes_de_intervencao}
+            </ul>
+        <hr/>
+            <adress>
+                <a href="lista_intervencoes.html">Voltar à lista de intervenções</a>
+                <a href="../index.html">Voltar ao índice</a>
+            </adress>
+        </body>
+    </html> 
+
+    '''
+    new_file(f"./output/intervencoes/{intervencao}.html", html_intervencao)
+
+
+# -------------------- Página Principal --------------------#
+
+
+html = f'''
+<html>
+    <head>
+        <title> Reparações oficina automóvel </title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <h3>Lista de Dados consultáveis sobre as reparações</h3>
+        <ul>
+            <li><a href="intervencoes/lista_intervencoes.html">Tipos de Intervenção</a></li> 
+        </ul>
+    </body>
+</html>
+
+'''
+
+new_file("./output/index.html", html)
