@@ -56,10 +56,13 @@ for reparacao in dados["reparacoes"]:
 
 
 #--------------------- Listagem e Páginas individuais das reparações  --------------------#
-intervencoes_realizadas= ""
+
 
 for reparacao in reparacoes_ordenadas:
+        intervencoes_realizadas= ""
         linhas_reparacoes += f'''<tr> <td> <a href ="./{reparacao['nif']}_{reparacao['data']}.html">{reparacao["data"]} </a></td> <td>{reparacao["nif"]}</td> <td>{reparacao["nome"]}</td> <td>{reparacao["viatura"]["marca"]}</td> <td>{reparacao["viatura"]["modelo"]}</td> <td>{reparacao["nr_intervencoes"]}</td> </tr>\n '''
+        for intervencao in reparacao["intervencoes"]:
+            intervencoes_realizadas += f'''<p> <b> {intervencao["codigo"]} - {intervencao["nome"]} : </b>{intervencao["descricao"]} </p>\n'''
         html_reparacao = f'''
             <html>
                 <head>
@@ -67,20 +70,20 @@ for reparacao in reparacoes_ordenadas:
                     <meta charset="utf-8"/>
                 </head>
                 <body>
-                    <h2>Reparação de {reparacao["nome"]}</h2>
-                    <h1> Dados do cliente </h1>
+                    <h1>Reparação de {reparacao["nome"]}</h1>
+                    <h3> Dados do cliente </h3>
                     <table border="1">
                         <tr> <td>Data</td> <td>{reparacao["data"]}</td> </tr>
                         <tr> <td>NIF</td> <td>{reparacao["nif"]}</td> </tr>
                         <tr> <td>Nome</td> <td>{reparacao["nome"]}</td> </tr>
                     </table>
-                    <h1> Dados da viatura </h1>
+                    <h3> Dados da viatura </h3>
                     <table border="1">
                         <tr> <td>Marca</td> <td>{reparacao["viatura"]["marca"]}</td> </tr> 
                         <tr> <td>Modelo</td> <td>{reparacao["viatura"]["modelo"]}</td> </tr> 
                         <tr> <td>Matrícula</td> <td>{reparacao["viatura"]["matricula"]}</td> </tr>
                     </table>
-                    <h1> Intervenções realizadas </h1>
+                    <h2> Intervenções realizadas </h2>
                     <p> Número de intervenções: {reparacao["nr_intervencoes"]} </p>
                     {intervencoes_realizadas}
 
@@ -198,6 +201,7 @@ html = f'''
         <ul>
             <li><a href="intervencoes/lista_intervencoes.html">Tipos de Intervenção</a></li> 
             <li><a href="reparacoes/lista_reparacoes.html">Lista de Reparações</a></li>
+            <li><a href="carros/lista_marcas_modelos.html">Marcas e modelos intervencionados</a></li>
         </ul>
     </body>
 </html>
