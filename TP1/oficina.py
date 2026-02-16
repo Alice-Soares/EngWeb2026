@@ -37,6 +37,8 @@ mk_dir("output/reparacoes")
 # Código - Nome e Descrição
 intervencoes = {}
 codigos_intervencao = []
+#Código - html das reparações que incluem esta intervenção
+lista_reparacoes_de_intervencao = {}
 
 linhas_reparacoes = ""
 
@@ -53,7 +55,9 @@ for reparacao in dados["reparacoes"]:
                 "nome": intervencao["nome"],
                 "descricao": intervencao["descricao"]
             }
-
+            lista_reparacoes_de_intervencao[intervencao["codigo"]] = f'''<li><a href="../reparacoes/{reparacao['nif']}_{reparacao['data']}.html">{reparacao["data"]} - {reparacao["nome"]}</a></li>\n'''
+        else:
+            lista_reparacoes_de_intervencao[intervencao["codigo"]] += f'''<li><a href="../reparacoes/{reparacao['nif']}_{reparacao['data']}.html">{reparacao["data"]} - {reparacao["nome"]}</a></li>\n'''
 
 #--------------------- Listagem e Páginas individuais das reparações  --------------------#
 
@@ -163,8 +167,6 @@ new_file("./output/intervencoes/lista_intervencoes.html", html_lista_inter)
 
 #-------------------- Paginas individuais Intervenção --------------------#
 
-lista_reparacoes_de_intervencao = ""
-
 
 for intervencao in intervencoes:
 
@@ -175,16 +177,16 @@ for intervencao in intervencoes:
             <meta charset="utf-8"/>
         </head>
         <body>
-            <h2>{intervencao}</h2>
+            <h1>{intervencao}</h1>
             <table border="1">
-                <tr> <td>Código</td> <td>{intervencao}</td> </tr>
-                <tr> <td>Nome</td> <td>{intervencoes[intervencao]["nome"]}</td> </tr>
-                <tr> <td>Descrição</td> <td>{intervencoes[intervencao]["descricao"]}</td> </tr>
+                <tr> <td> <b>Código</b> </td> <td>{intervencao}</td> </tr>
+                <tr> <td> <b>Nome</b> </td> <td>{intervencoes[intervencao]["nome"]}</td> </tr>
+                <tr> <td> <b>Descrição</b> </td> <td>{intervencoes[intervencao]["descricao"]}</td> </tr>
             </table>
             <hr/>
             <h3>Reparações que incluem esta intervenção</h3>
             <ul>
-                {lista_reparacoes_de_intervencao}
+                {lista_reparacoes_de_intervencao[intervencao] if intervencao in lista_reparacoes_de_intervencao else "<p>Não existem reparações que incluam esta intervenção.</p>"}
             </ul>
         <hr/>
             <adress>

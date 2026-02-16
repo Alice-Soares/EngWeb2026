@@ -23,5 +23,8 @@
      -  [lista_reparacoes.html](output/reparacoes/lista_reparacoes.html) - Página com a listagem das reparações.
      -  Conjunto de páginas individuais com o formato **nif_data.html**, para cada reparação.
   
-  - 
+  - [output/intervencoes](output/intervencoes/) - Pasta com os ficheiros referentes a informação sobre intervenções.
+   
+     -  [lista_reparacoes.html](output/intervencoes/lista_intervencoes.html) - Página com a listagem dos tipos de intervencões.
+     -  Conjunto de páginas individuais com o formato **codigoIntervencao.html**, para cada intervenção.
 
