@@ -86,7 +86,14 @@ for reparacao in reparacoes_ordenadas:
                     <h2> Intervenções realizadas </h2>
                     <p> Número de intervenções: {reparacao["nr_intervencoes"]} </p>
                     {intervencoes_realizadas}
-
+                    <hr/>
+                    <adress>
+                        <a href="lista_reparacoes.html">Voltar à lista de reparações</a> 
+                        | 
+                        <a href="../index.html"> Voltar ao índice</a>
+                    </adress>
+                </body>
+            </html>
             '''
         new_file(f"./output/reparacoes/{reparacao['nif']}_{reparacao['data']}.html", html_reparacao)
 
@@ -105,6 +112,10 @@ html_lista_reparacoes = f'''
             <tr> <td>Data</td> <td>NIF</td> <td>Nome</td> <td>Marca</td> <td>Modelo</td> <td>Número de Intervenções</td> </tr>
             {linhas_reparacoes}
         </table>
+        <hr/>
+            <adress>
+                <a href="../index.html">Voltar ao índice</a>
+            </adress>
     </body> 
 </html>
 
