@@ -27,9 +27,7 @@ dados = open_json_file("dataset_reparacoes.json")
 mk_dir("output")
 mk_dir("output/intervencoes")
 mk_dir("output/reparacoes")
-
-
-
+mk_dir("output/carros")
 
 
 #-------------------- Script principal --------------------#
@@ -37,8 +35,12 @@ mk_dir("output/reparacoes")
 # Código - Nome e Descrição
 intervencoes = {}
 codigos_intervencao = []
+
 #Código - html das reparações que incluem esta intervenção
 lista_reparacoes_de_intervencao = {}
+
+#Marca - Modelos - contador de reparações
+marcas_modelos = {}
 
 linhas_reparacoes = ""
 
@@ -47,7 +49,13 @@ reparacoes_ordenadas = sorted(reparacoes, key=lambda x: x["data"])
 
 
 for reparacao in dados["reparacoes"]:
-
+    if reparacao["viatura"]["marca"] not in marcas_modelos:
+        marcas_modelos[reparacao["viatura"]["marca"]] = {reparacao["viatura"]["modelo"]: 1}
+    else:
+        if reparacao["viatura"]["modelo"] not in marcas_modelos[reparacao["viatura"]["marca"]]:
+            marcas_modelos[reparacao["viatura"]["marca"]][reparacao["viatura"]["modelo"]] = 1
+        else:
+            marcas_modelos[reparacao["viatura"]["marca"]][reparacao["viatura"]["modelo"]] += 1
     for intervencao in reparacao["intervencoes"]:
         if intervencao["codigo"] not in intervencoes:
             codigos_intervencao.append(intervencao["codigo"])
@@ -199,6 +207,66 @@ for intervencao in intervencoes:
     '''
     new_file(f"./output/intervencoes/{intervencao}.html", html_intervencao)
 
+
+#-------------------- Página Marcas e Modelos --------------------#
+
+marcar_modelos_ordenados = sorted(marcas_modelos.items(), key=lambda x: x[0])
+
+linhas_modelos = ""
+
+for marca, modelos in marcar_modelos_ordenados:
+    modelos_ordenados = sorted(modelos.items(), key=lambda x: x[0])
+    html_lista_modelos = ""
+    for modelo, contador in modelos_ordenados:
+        linhas_modelos += f'''<tr> <td> <a href="{marca}.html">{marca}</a> </td> <td>{modelo}</td> <td>{contador}</td> </tr>\n'''
+        if contador > 1:
+            html_lista_modelos += f'''<li><b>{modelo}</b> - {contador} reparações</li>\n'''
+        else:
+            html_lista_modelos += f'''<li><b>{modelo}</b> - {contador} reparação</li>\n'''
+    
+    html_pagina_marca = f'''
+    <html>
+    <head>
+        <title> {marca} </title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <h1>{marca}</h1>
+        <h3> Número de Modelos intervencionados: {len(modelos)} </h3>
+        <ul>
+            {html_lista_modelos}
+        </ul>
+        <hr/>
+            <adress>
+                <a href="lista_marcas_modelos.html">Voltar à lista de marcas e  modelos</a>
+                <a href="../index.html">Voltar ao índice</a>
+            </adress>
+    </body>
+    </html>
+    '''
+    new_file(f"./output/carros/{marca}.html", html_pagina_marca)
+
+html_lista_modelos = f'''
+<html>
+    <head>
+        <title> Marcas e Modelos </title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <h3>Marcas e Modelos intervencionados</h3>
+        <table border="1">
+            <tr> <td>Marca</td> <td>Modelo</td> <td>Número de Reparações</td> </tr>
+            {linhas_modelos}
+        </table>
+        <hr/>
+            <adress>
+                <a href="../index.html">Voltar ao índice</a>
+            </adress>
+    </body>
+</html>
+'''
+
+new_file("./output/carros/lista_marcas_modelos.html", html_lista_modelos)
 
 # -------------------- Página Principal --------------------#
 
