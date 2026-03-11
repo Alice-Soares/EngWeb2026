@@ -1,0 +1,39 @@
+extends layout 
+
+block content
+  .w3-card-4
+    header.w3-container.w3-teal
+      h1= exame.nome["primeiro"] + " " + exame.nome["último"] + " - " + exame.dataEMD
+
+    .w3-container
+      table.w3-table-all.w3-margin-top
+        tr
+          th Nome
+          td= exame.nome["primeiro"] + " " + exame.nome["último"]
+        tr
+          th Idade
+          td= exame.idade
+        tr
+          th Género
+          td= exame.género
+        tr
+          th Morada
+          td= exame.morada
+        tr
+          th Modalidade
+          td= exame.modalidade
+        tr
+          th Clube
+          td= exame.clube
+        tr
+          th Email
+          td= exame.email
+        tr
+          th Federado
+          td= exame.federado ? "Sim" : "Não"
+        tr
+          th Resultado
+          td= exame.resultado ? "Apto" : "Inapto"  
+
+
+    a.w3-btn.w3-grey.w3-margin-top.w3-margin-left(href="/") Voltar
