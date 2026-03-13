@@ -56,6 +56,24 @@ var examesServer = http.createServer((req, res) => {
                         res.end(templates.examesListPage(exames, d))
                     })
                 }
+                // GET /emd/datadesc ------------------------------------------------------------------
+                else if(req.url == '/emd/datadesc'){
+                    axios.get("http://localhost:3000/exames?_sort=data&_order=desc")
+                    .then(resp => {
+                        var exames = resp.data
+                        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
+                        res.end(templates.examesListPage(exames, d))
+                    })
+                }
+                // GET /emd/nomeasc ------------------------------------------------------------------
+                else if(req.url == '/emd/nomeasc'){
+                    axios.get("http://localhost:3000/exames?_sort=primeiro_nome")
+                    .then(resp => {
+                        var exames = resp.data
+                        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
+                        res.end(templates.examesListPage(exames, d))
+                    })
+                }
                 // GET /emd/registo ---------------------------------------------------------
                 else if(req.url == '/emd/registo'){
                     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
