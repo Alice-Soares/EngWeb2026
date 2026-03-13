@@ -4,6 +4,9 @@ block content
   .w3-card-4
     header.w3-container.w3-teal
       h1 Exames Médicos Desportivos
+
+      a.w3-btn.w3-teal.w3-margin-top(href="/emd/registo") Registar Exame
+      a.w3-btn.w3-teal.w3-margin-top(href="/emd/stats") Estatísticas
     
     .w3-container
       table.w3-table-all.w3-margin-top
@@ -12,11 +15,19 @@ block content
           th Data
           th Modalidade
           th Resultado
+          th Operações
         each t in list
           tr 
-            td= t.nome["primeiro"] + " " + t.nome["último"]
+            td= t.primeiro_nome + " " + t.ultimo_nome
             td
                a.w3-btn.w3-round.w3-blue-grey.w3-small(href=`/emd/${t.id}`) #{t.dataEMD}
             td= t.modalidade
             td= t.resultado ? "Apto" : "Inapto" 
+            td
+              a.w3-btn.w3-round.w3-blue-grey.w3-small(href=`/emd/editar/${t.id}`) Editar
+              a.w3-btn.w3-round.w3-red.w3-small.w3-margin-left(href=`/emd/apagar/${t.id}`) Apagar
+
+      
+
+      
               

@@ -1,0 +1,68 @@
+extends layout
+
+block content
+  .w3-card-4
+    header.w3-container.w3-purple
+      h2= exame ? "Editar Exame Médico" : "Novo Exame Médico"
+    
+    form.w3-container.w3-padding-16(method="POST" action=exame ? `/emd/${exame.id}` : "/emd")
+      fieldset
+        legend Metadata
+        if exame
+          input(type="hidden" name="id" value=exame.id)
+          input(type="hidden" name="index" value=exame.index)
+        
+        label Data
+        input.w3-input.w3-round(type="text" name="dataEMD" value=exame ? exame.dataEMD : "")
+        
+        label Primeiro Nome
+        input.w3-input.w3-round(type="text" name="primeiro_nome" value=exame ? exame.primeiro_nome : "")
+        
+        label Último Nome
+        input.w3-input.w3-round(type="text" name="ultimo_nome" value=exame ? exame.ultimo_nome : "")
+
+        label Idade
+        input.w3-input.w3-round(type="number" name="idade" value=exame ? exame.idade : "")
+
+        label Género
+          br
+          input.w3-margin(type="radio" name="género" value="M" checked=exame && exame.género === "M")
+          | Masculino
+          br
+          input.w3-margin(type="radio" name="género" value="F" checked=exame && exame.género === "F")
+          | Feminino
+          br
+
+        label Morada
+        input.w3-input.w3-round(type="text" name="morada" value=exame ? exame.morada : "")  
+        
+        label Modalidade
+        input.w3-input.w3-round(type="text" name="modalidade" value=exame ? exame.modalidade : "")
+
+        label Clube
+        input.w3-input.w3-round(type="text" name="clube" value=exame ? exame.clube : "")
+
+        label Email
+        input.w3-input.w3-round(type="text" name="email" value=exame ? exame.email : "")
+
+        label Federado
+          br
+          input.w3-margin(type="radio" name="federado" value="true" checked=exame && exame.federado === true)
+          | Sim
+          br
+          input.w3-margin(type="radio" name="federado" value="false" checked=exame && exame.federado === false)
+          | Não
+          br
+
+        label Resultado
+          br
+          input.w3-margin(type="radio" name="resultado" value="true" checked=exame && exame.resultado === true)
+          | Aprovado
+          br
+          input.w3-margin(type="radio" name="resultado" value="false" checked=exame && exame.resultado === false)
+          | Reprovado
+          br
+
+      
+      button.w3-btn.w3-purple.w3-margin-top(type="submit")= exame ? "Atualizar" : "Inserir"
+      a.w3-btn.w3-grey.w3-margin-top.w3-margin-left(href="/") Cancelar
