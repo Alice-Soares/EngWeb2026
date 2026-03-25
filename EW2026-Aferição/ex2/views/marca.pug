@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  div.w3-container
+    h2.w3-text-dark-grey= marca
+    
+    h3.w3-text-dark-grey Modelos
+    ul.w3-ul.w3-hoverable.w3-light-grey
+      each modelo in modelos
+        li= modelo
+    
+    h3.w3-text-dark-grey Reparações
+    table.w3-table.w3-bordered.w3-striped
+      thead
+        tr.w3-blue
+          th ID
+          th Data
+          th Nome Cliente
+          th Matrícula
+          th Nº Intervenções
+      tbody
+        each repair in repairs
+          tr
+            td
+              a.w3-text-blue(href='/' + repair._id)= repair._id
+            td= repair.data
+            td= repair.nome
+            td= repair.viatura.matricula
+            td= repair.nr_intervencoes
+    
+    a.w3-btn.w3-blue.w3-margin-top(href='/') Voltar à lista
+    a.btn(href='/') Voltar à lista

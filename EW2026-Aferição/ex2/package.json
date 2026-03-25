@@ -1,0 +1,14 @@
+{
+  "name": "repairs-interface",
+  "version": "1.0.0",
+  "description": "Interface para reparações de automóveis",
+  "main": "app_interface.js",
+  "scripts": {
+    "start": "node app_interface.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pug": "^3.0.2",
+    "axios": "^1.3.0"
+  }
+}

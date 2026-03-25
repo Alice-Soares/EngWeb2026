@@ -1,0 +1,13 @@
+{
+  "name": "repairs-api",
+  "version": "1.0.0",
+  "description": "API de dados para reparações de automóveis",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.0"
+  }
+}

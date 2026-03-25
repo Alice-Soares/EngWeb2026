@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  div.w3-container
+    div.detail.w3-card.w3-padding.w3-light-grey
+      h2.w3-text-dark-grey Detalhes da Reparação
+      
+      p
+        strong ID: 
+        = repair._id
+      p
+        strong Nome Cliente: 
+        = repair.nome
+      p
+        strong NIF: 
+        = repair.nif
+      p
+        strong Data: 
+        = repair.data
+      
+      h3.w3-text-dark-grey Viatura
+      p
+        strong Marca: 
+        = repair.viatura.marca
+      p
+        strong Modelo: 
+        = repair.viatura.modelo
+      p
+        strong Matrícula: 
+        = repair.viatura.matricula
+      
+      h3.w3-text-dark-grey Intervenções (#{repair.nr_intervencoes})
+      table.w3-table.w3-bordered.w3-striped
+        thead
+          tr.w3-blue
+            th Código
+            th Nome
+            th Descrição
+        tbody
+          each intervencao in repair.intervencoes
+            tr
+              td= intervencao.codigo
+              td= intervencao.nome
+              td= intervencao.descricao
+      
+      a.w3-btn.w3-blue.w3-margin-top(href='/') Voltar à lista

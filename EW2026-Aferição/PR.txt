@@ -1,0 +1,160 @@
+# Reparações de Automóveis - Aferição EngWeb 2026
+
+## Persistência de Dados
+
+Os dados são persistidos numa base de dados **MongoDB** com os seguintes parâmetros:
+- **Database**: autoRepair
+- **Collection**: repairs
+- **Formato**: JSON 
+- **Índices de Texto**: criados automaticamente para campos de pesquisa (nome, marca, modelo, intervenções)
+
+## Setup da Base de Dados
+
+### 1. Dataset Original
+- Ficheiro: `dataset_reparacoes.json`
+- Formato: Array JSON com registos de reparações
+- Campos: nome, nif, data, viatura (marca, modelo, matrícula), intervencoes (código, nome, descrição)
+
+### 2. Tratamento do Dataset
+- Script de tratamento: `tratar_dataset.py`
+- Execução: `python3 tratar_dataset.py`
+- Resultado: `dataset_reparacoes_tratado.json`
+
+### 3. Importação Automática na Base de Dados
+A importação é realizada **automaticamente** pelo Docker compose na inicialização:
+
+1. **Dockerfile.mongo**: Copia os ficheiros para `/docker-entrypoint-initdb.d/`
+   - `dataset_reparacoes_tratado.json`
+   - `mongo-init/import.sh`
+
+2. **import.sh**: Script de inicialização MongoDB
+   ```bash
+   mongoimport --host localhost --db autoRepair --collection repairs \
+     --file /docker-entrypoint-initdb.d/dataset_reparacoes_tratado.json --jsonArray
+   
+   mongosh autoRepair --eval 'db.repairs.createIndex({"nome": "text", "nif": "text", "viatura.marca": "text", "viatura.modelo": "text", "intervencoes.nome": "text", "intervencoes.descricao": "text"})'
+   ```
+
+## Estrutura do Dataset
+
+O ficheiro JSON é um array direto de objectos:
+```json
+[
+  {
+    "nome": "Nome do Cliente",
+    "nif": 123456789,
+    "data": "YYYY-MM-DD",
+    "viatura": {
+      "marca": "Marca",
+      "modelo": "Modelo",
+      "matricula": "Matrícula"
+    },
+    "nr_intervencoes": 4,
+    "intervencoes": [
+      {
+        "codigo": "R001",
+        "nome": "Nome da Intervenção",
+        "descricao": "Descrição da intervenção"
+      }
+    ],
+    "id": 1
+  }
+]
+```
+
+## Como Executar
+
+### Pré-requisitos
+- Docker Desktop instalado e em execução
+- Docker Compose
+
+### Execução com Docker Compose
+
+1. Navegar para a pasta `EW2026-Aferição`:
+   ```bash
+   cd /Users/alicesoares/Desktop/LEI/EngWeb/EngWeb2026/EW2026-Aferição
+   ```
+
+2. Iniciar todos os serviços:
+   ```bash
+   docker-compose up -d
+   ```
+
+3. Aguardar alguns segundos para os serviços iniciarem completamente
+
+4. Verificar se os serviços estão a correr:
+   ```bash
+   docker-compose ps
+   ```
+
+### Parar os Serviços
+```bash
+docker-compose down
+```
+
+### Portas
+
+| Serviço | Porta | URL |
+|---------|-------|-----|
+| MongoDB | 27017 | mongodb://localhost:27017 |
+| API de Dados | 16025 | http://localhost:16025 |
+| Interface Web | 16026 | http://localhost:16026 |
+
+## Endpoints da API
+
+A API está disponível em `http://localhost:16025/repairs`
+
+### Consultas (GET)
+
+1. **GET /repairs** - Lista todas as reparações
+   ```bash
+   curl http://localhost:16025/repairs
+   ```
+
+2. **GET /repairs/:id** - Detalhes de uma reparação
+   ```bash
+   curl http://localhost:16025/repairs/1
+   ```
+
+3. **GET /repairs?ano=YYYY** - Reparações de um ano específico
+   ```bash
+   curl http://localhost:16025/repairs?ano=2021
+   ```
+
+4. **GET /repairs?marca=MARCA** - Reparações de uma marca específica
+   ```bash
+   curl http://localhost:16025/repairs?marca=Lada
+   ```
+
+5. **GET /repairs/matrículas** - Lista de matrículas (sem repetições, ordenadas)
+   ```bash
+   curl http://localhost:16025/repairs/matrículas
+   ```
+
+6. **GET /repairs/interv** - Lista de intervenções (sem repetições, ordenadas por código)
+   ```bash
+   curl http://localhost:16025/repairs/interv
+   ```
+
+### Modificação (POST/DELETE)
+
+7. **POST /repairs** - Adicionar nova reparação
+   ```bash
+   curl -X POST http://localhost:16025/repairs \
+     -H "Content-Type: application/json" \
+     -d '{...}'
+   ```
+
+8. **DELETE /repairs/:id** - Eliminar reparação
+   ```bash
+   curl -X DELETE http://localhost:16025/repairs/1
+   ```
+
+## Aceder à Interface Web
+
+1. Abrir o browser: `http://localhost:16026`
+2. Ver lista de reparações
+3. Clicar num ID para ver detalhes
+4. Clicar numa marca para filtrar por marca
+
+

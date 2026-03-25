@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  div.w3-container
+    h2.w3-text-dark-grey Lista de Reparações
+    table.w3-table.w3-bordered.w3-striped
+      thead
+        tr.w3-blue
+          th ID
+          th Data
+          th Nome Cliente
+          th Matrícula
+          th Marca
+          th Nº Intervenções
+      tbody
+        each repair in repairs
+          tr
+            td
+              a.w3-text-blue(href='/' + repair._id)= repair._id
+            td= repair.data
+            td= repair.nome
+            td= repair.viatura.matricula
+            td
+              a.w3-text-blue(href='/' + repair.viatura.marca)= repair.viatura.marca
+            td= repair.nr_intervencoes
